@@ -1,812 +1,115 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>İçerik Üretici Arayüzü</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: #0f1115;
-      color: #e8ecf1;
-    }
-    .app {
-      display: grid;
-      grid-template-columns: 420px 1fr;
-      min-height: 100vh;
-    }
-    .sidebar {
-      background: #151922;
-      border-right: 1px solid #252b36;
-      padding: 20px;
-      overflow-y: auto;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-    .preview-area {
-      padding: 24px;
-      overflow-y: auto;
-      background: #0f1115;
-    }
-    .panel {
-      background: #1b2130;
-      border: 1px solid #2a3140;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.18);
-    }
-    .panel h2, .panel h3 {
-      margin: 0 0 14px 0;
-      font-size: 16px;
-      color: #ffffff;
-    }
-    .field {
-      margin-bottom: 12px;
-    }
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: #aeb7c7;
-      margin-bottom: 6px;
-    }
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      background: #0f141d;
-      border: 1px solid #30394b;
-      color: #fff;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font: inherit;
-      resize: vertical;
-    }
-    .field textarea { min-height: 88px; }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: #2f6df6;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button.secondary { background: #242c3b; }
-    button.danger { background: #c33d4d; }
-    button.small {
-      padding: 7px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-    }
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .preview-shell {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .preview-card {
-      background: #ffffff;
-      color: #111;
-      border-radius: 18px;
-      padding: 20px;
-      border: 1px solid #222a36;
-      min-height: 400px;
-    }
-    .code-box {
-      position: sticky;
-      bottom: 0;
-      margin-top: 18px;
-      background: #0d121a;
-      border: 1px solid #2a3140;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .code-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-bottom: 1px solid #242b37;
-      background: #121824;
-    }
-    .code-top strong { font-size: 14px; }
-    #outputCode {
-      margin: 0;
-      padding: 16px;
-      max-height: 340px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: #d7e1f0;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .muted {
-      color: #98a4b8;
-      font-size: 12px;
-    }
-    .block-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      justify-content: flex-end;
-    }
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .topbar h1 {
-      margin: 0;
-      font-size: 20px;
-      color: #fff;
-    }
-    .badge {
-      font-size: 12px;
-      background: #202838;
-      border: 1px solid #313c53;
-      padding: 7px 10px;
-      border-radius: 999px;
-      color: #c9d4e7;
-    }
-    @media (max-width: 1100px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar {
-        position: relative;
-        height: auto;
-        border-right: 0;
-        border-bottom: 1px solid #252b36;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="topbar">
-        <h1>İçerik Üretici</h1>
-        <div class="badge">Canlı Kod</div>
-      </div>
+<meta charset="UTF-8">
+<title>Live Editor</title>
 
-      <div class="panel">
-        <h2>Genel Alanlar</h2>
-        <div class="field">
-          <label>Logo URL</label>
-          <input type="text" id="logoUrl" value="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/arturia.jpg">
-        </div>
-        <div class="field">
-          <label>Logo Alt Metni</label>
-          <input type="text" id="logoAlt" value="Marka Logosu">
-        </div>
-        <div class="field">
-          <label>Logo Genişliği</label>
-          <input type="text" id="logoWidth" value="400px">
-        </div>
-        <div class="field">
-          <label>Teknik Özellikler Başlığı</label>
-          <input type="text" id="specTitle" value="Arturia | MicroFreak Deneysel Hibrit Synthesizer | Ürün Bilgisi">
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div class="section-title">Paragraflar</div>
-          <div class="btn-row">
-            <button type="button" class="small secondary" id="addParagraph">+</button>
-            <button type="button" class="small danger" id="removeParagraph">-</button>
-          </div>
-        </div>
-        <div id="paragraphsContainer"></div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div class="section-title">Videolar</div>
-          <div class="btn-row">
-            <button type="button" class="small secondary" id="addVideo">+</button>
-            <button type="button" class="small danger" id="removeVideo">-</button>
-          </div>
-        </div>
-        <div id="videosContainer"></div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div class="section-title">Teknik Özellik Tablosu</div>
-          <div class="btn-row">
-            <button type="button" class="small secondary" id="addSpec">+</button>
-            <button type="button" class="small danger" id="removeSpec">-</button>
-          </div>
-        </div>
-        <div id="specsContainer"></div>
-      </div>
-    </aside>
-
-    <main class="preview-area">
-      <div class="preview-shell">
-        <div class="panel">
-          <h2>Canlı Önizleme</h2>
-          <div class="preview-card">
-            <div id="previewMount"></div>
-          </div>
-        </div>
-
-        <div class="code-box">
-          <div class="code-top">
-            <strong>Oluşan HTML Çıktısı</strong>
-            <button id="copyCodeBtn">Kodu Kopyala</button>
-          </div>
-          <pre id="outputCode" class="mono"></pre>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const state = {
-      logoUrl: "https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/arturia.jpg",
-      logoAlt: "Marka Logosu",
-      logoWidth: "400px",
-      specTitle: "Arturia | MicroFreak Deneysel Hibrit Synthesizer | Ürün Bilgisi",
-      paragraphs: [
-        {
-          headingTag: "h1",
-          title: "Yeni Ses Fikirlerini Hızla Yakala",
-          text: "Arturia MicroFreak Deneysel Hibrit Synthesizer, alışılmış kalıpların dışına çıkmak isteyenler için ilhamı hızla sese dönüştüren bir yapı sunar. Monophonic, paraphonic ve unison modlarıyla farklı çalma yaklaşımlarına uyum sağlarken, 4 sese kadar kullanım imkânı yaratıcı alanı genişletir. Chord mode ile belirlediğiniz akor formunu tek notayla çalabilir, Scale Quantize sayesinde beyaz tuşları seçtiğiniz gam içinde kullanarak üretim sürecini daha akıcı hale getirebilirsiniz. 25 tuşlu kapasitif klavye, polyphonic aftertouch desteği ve dokunmatik şerit ile performans sırasında ifadeyi daha canlı ve sezgisel bir noktaya taşır.",
-          imageUrl: "https://placehold.co/500x500",
-          alt: "gorsel1"
-        },
-        {
-          headingTag: "h2",
-          title: "Sequencer ile Sürprizleri Müziğe Çevir",
-          text: "MicroFreak’in güçlü arpeggiator ve 64 adımlı sequencer yapısı, tekrar eden fikirleri canlı ve hareketli hale getirmek için etkileyici bir alan açar. Up, Order, Random ve Pattern modlarıyla ritmik akışınızı şekillendirebilir, Spice & Dice gate randomizer fonksiyonlarıyla beklenmedik ama müzikal sonuçlar elde edebilirsiniz.",
-          imageUrl: "https://placehold.co/500x500",
-          alt: "gorsel2"
-        },
-        {
-          headingTag: "h2",
-          title: "Dijital Güç, Analog Dokunuşla Buluşuyor",
-          text: "Bu deneysel hibrit synthesizer, dijital osilatör yapısını analog filtre karakteriyle bir araya getirerek ses tasarımında dikkat çekici bir denge kurar. 12 dB SEM esintili state-variable filtre, ister keskin wavetable tonlarını yumuşatmak ister daha iddialı ve belirgin karakterler oluşturmak için esnek bir kullanım sağlar.",
-          imageUrl: "https://placehold.co/500x500",
-          alt: "gorsel3"
-        },
-        {
-          headingTag: "h2",
-          title: "Stüdyodan Sahneye Akıcı Bağlantılar",
-          text: "MicroFreak, kompakt yapısına rağmen farklı kurulumlara rahatça uyum sağlayan bağlantılarıyla üretim sürecini sadeleştirir. 6.35 mm dengeli line çıkışı, 3.5 mm kulaklık çıkışı ve farklı ekipmanlarla uyumlu bağlantı seçenekleriyle stüdyo ve sahne tarafında pratiklik sağlar.",
-          imageUrl: "https://placehold.co/500x500",
-          alt: "gorsel4"
-        }
-      ],
-      videos: [
-        {
-          title: "Arturia | MicroFreak Deneysel Hibrit Synthesizer | Ürün Tanıtımı",
-          youtubeUrl: "https://www.youtube.com/watch?v=gplOOccxkwE"
-        }
-      ],
-      specs: [
-        { key: "LFO (Senkronizasyonlu)", value: "Sinüs, Üçgen, Testere, Kare, Rastgele, Yumuşatılmış Rastgele" },
-        { key: "Boyutlar", value: "55 x 311 x 233 mm / 2.17 x 12.24 x 23,3 cm (9,17 in)" },
-        { key: "Ağırlık", value: "1.02 kg / 1,02 kg (2,25 lb)" }
-      ]
-    };
-
-    const cssTemplate = `.product-detail-section {
-  background-color: #FFFFFF;
-  line-height: 1.6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-.product-detail-section [class^="paragraph-"] {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  padding: 15px;
-  color: #000000;
-  margin: 20px 0;
-  background-color: #F2F2F2;
-  border: 1px solid #F2F2F2;
-  border-radius: 10px;
-  font-size: 16px;
-}
-.product-detail-section [class^="paragraph-"] h1,
-.product-detail-section [class^="paragraph-"] h2,
-.product-detail-section [class^="paragraph-"] h3 {
-  font-size: 24px;
-  color: #010101;
-}
-.product-detail-section [class^="paragraph-"] p {
-  font-size: 16px;
-  line-height: 1.6;
-}
-.product-detail-section .product-info {
-  flex: 1;
-}
-.product-detail-section [class^="paragraph-"] img {
-  width: 500px;
-  max-width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  border: 1px solid #cccccc;
-  transition: all 0.3s ease-in-out;
-}
-.product-detail-section [class^="paragraph-"] img:hover {
-  transform: scale(1.05);
-  border-color: #F5F5F5;
-  box-shadow: none;
-  opacity: 1;
-}
-.product-detail-section .video-container {
-  position: relative;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-}
-.product-detail-section .video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.product-detail-section .video-container.yt-lite {
-  cursor: pointer;
-  background-color: #000;
-}
-.product-detail-section .video-container.yt-lite .yt-playbtn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 68px;
-  height: 48px;
-  background-color: rgba(255, 0, 0, 0.8);
-  border-radius: 14px;
-  z-index: 1;
-  pointer-events: none;
-  transition: background-color 0.2s ease;
-}
-.product-detail-section .video-container.yt-lite .yt-playbtn::before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 55%;
-  transform: translate(-50%, -50%);
-  border-style: solid;
-  border-width: 10px 0 10px 18px;
-  border-color: transparent transparent transparent #fff;
-}
-.product-detail-section .video-container.yt-lite:hover .yt-playbtn {
-  background-color: rgba(255, 0, 0, 1);
-}
-.product-detail-section .video-section {
-  text-align: left;
-  margin: 20px 0;
-  padding: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-}
-.product-detail-section .video-section h2 {
-  background-color: #F5F5F5;
-  color: #201C3E;
-  padding: 10px;
-  margin: 0;
-  text-align: center;
-  font-size: 24px;
-}
-.product-detail-section .specs-container {
-  text-align: left;
-  margin: 20px 0;
-  padding: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-}
-.product-detail-section h1.red-box {
-  background-color: #F5F5F5;
-  color: #201C3E;
-  padding: 10px;
-  margin: 0;
-  text-align: center;
-}
-.product-detail-section .specs-container table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  font-size: 1rem;
-  table-layout: fixed;
-}
-.product-detail-section .specs-container table th:first-child,
-.product-detail-section .specs-container table td:first-child {
-  width: 35%;
-}
-.product-detail-section .specs-container table th:last-child,
-.product-detail-section .specs-container table td:last-child {
-  width: 65%;
-}
-.product-detail-section .specs-container table th,
-.product-detail-section .specs-container table td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  vertical-align: top;
-}
-.product-detail-section .specs-container table thead th {
-  background-color: #F5F5F5;
-  color: #333333;
-}
-@media (max-width: 768px) {
-  .product-detail-section [class^="paragraph-"] {
-    flex-direction: column !important;
-    align-items: center;
-  }
-  .product-detail-section [class^="paragraph-"] img {
-    width: 100%;
-  }
-  .product-detail-section .video-container {
-    max-width: 560px;
-  }
-  .product-detail-section .specs-container {
-    overflow-x: auto;
-  }
-  .product-detail-section table {
-    width: 100%;
-    table-layout: fixed;
-  }
-  .product-detail-section th,
-  .product-detail-section td {
-    font-size: 1rem;
-    padding: 10px;
-  }
-}`;
-
-    function escapeHtml(str = "") {
-      return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function escapeAttr(str = "") {
-      return escapeHtml(str).replace(/'/g, "&#39;");
-    }
-
-    function normalizeYouTubeId(url = "") {
-      const value = url.trim();
-      if (!value) return "";
-      if (/^[a-zA-Z0-9_-]{11}$/.test(value)) return value;
-      try {
-        const parsed = new URL(value);
-        if (parsed.hostname.includes("youtu.be")) return parsed.pathname.replace("/", "").trim();
-        if (parsed.searchParams.get("v")) return parsed.searchParams.get("v").trim();
-        const parts = parsed.pathname.split("/").filter(Boolean);
-        const embedIndex = parts.indexOf("embed");
-        if (embedIndex !== -1 && parts[embedIndex + 1]) return parts[embedIndex + 1].trim();
-        return parts[parts.length - 1] || "";
-      } catch {
-        return "";
-      }
-    }
-
-    function paragraphDirection(index) {
-      return index % 2 === 0 ? "row-reverse" : "row";
-    }
-
-    function generateOutputHtml() {
-      const logoHtml = `<div class="product-detail-section-logo" style="display: grid; place-items: center; margin-bottom: 20px;"><img src="${escapeAttr(state.logoUrl)}" alt="${escapeAttr(state.logoAlt)}" style="width: ${escapeAttr(state.logoWidth)}; height: auto;"></div>`;
-
-      const dynamicParagraphStyles = state.paragraphs.map((_, index) => {
-        return `.product-detail-section .paragraph-${index + 1} { flex-direction: ${paragraphDirection(index)}; }`;
-      }).join("\n");
-
-      const paragraphHtml = state.paragraphs.map((item, index) => {
-        const tag = item.headingTag || (index === 0 ? "h1" : "h2");
-        return `<div class="paragraph-${index + 1}">
-<div class="product-info">
-<${tag}>${escapeHtml(item.title)}</${tag}>
-<p>${escapeHtml(item.text)}</p>
-</div>
-<img src="${escapeAttr(item.imageUrl)}" alt="${escapeAttr(item.alt || `gorsel${index + 1}`)}"></div>`;
-      }).join("\n");
-
-      const videosHtml = state.videos.map((video) => {
-        const videoId = normalizeYouTubeId(video.youtubeUrl);
-        const thumb = videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "";
-        return `<div class="video-section">
-<h2>${escapeHtml(video.title)}</h2>
-<div class="video-container yt-lite" data-video-id="${escapeAttr(videoId)}"><img src="${escapeAttr(thumb)}" alt="${escapeAttr(video.title)}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; cursor: pointer;">
-<div class="yt-playbtn">&nbsp;</div>
-</div>
-</div>`;
-      }).join("\n");
-
-      const specsRows = state.specs.map((row) => {
-        return `<tr>
-<th scope="row">${escapeHtml(row.key)}</th>
-<td>${escapeHtml(row.value)}</td>
-</tr>`;
-      }).join("\n");
-
-      return `<!-- Stil Tanımları -->
-${logoHtml}
 <style>
-${cssTemplate}
-${dynamicParagraphStyles}
+body{
+  margin:0;
+  background:#111;
+  color:#fff;
+  font-family:Arial;
+}
+
+.topbar{
+  padding:10px;
+  background:#1a1a1a;
+  position:sticky;
+  top:0;
+  display:flex;
+  justify-content:flex-end;
+}
+
+button{
+  padding:10px 15px;
+  background:#2f6df6;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+#editor{
+  background:#fff;
+  color:#000;
+  padding:20px;
+}
+
+/* SENİN CSS */
+.product-detail-section {
+  background:#fff;
+  font-family:sans-serif;
+}
+
+.product-detail-section [class^="paragraph-"]{
+  display:flex;
+  gap:20px;
+  margin:20px 0;
+  background:#f2f2f2;
+  padding:15px;
+  border-radius:10px;
+}
+
+.product-detail-section img{
+  width:300px;
+}
+
 </style>
-<div class="product-detail-section">
-${paragraphHtml}
-${videosHtml}
-<div class="specs-container">
-<h1 class="red-box">${escapeHtml(state.specTitle)}</h1>
-<table>
-<thead>
-<tr>
-<th>Özellik</th>
-<th>Değer</th>
-</tr>
-</thead>
-<tbody>
-${specsRows}
-</tbody>
-</table>
+</head>
+
+<body>
+
+<div class="topbar">
+  <button onclick="copyHTML()">Kodu Kopyala</button>
 </div>
-</div>`;
-    }
 
-    function renderParagraphInputs() {
-      const container = document.getElementById("paragraphsContainer");
-      container.innerHTML = "";
-      state.paragraphs.forEach((item, index) => {
-        const wrap = document.createElement("div");
-        wrap.className = "panel";
-        wrap.innerHTML = `
-          <div class="section-header">
-            <div class="section-title">Paragraf ${index + 1}</div>
-            <div class="muted">${index % 2 === 0 ? "Resim sağda" : "Resim solda"}</div>
-          </div>
-          <div class="field">
-            <label>Başlık Etiketi</label>
-            <select data-type="p-tag" data-index="${index}">
-              <option value="h1" ${item.headingTag === "h1" ? "selected" : ""}>h1</option>
-              <option value="h2" ${item.headingTag === "h2" ? "selected" : ""}>h2</option>
-              <option value="h3" ${item.headingTag === "h3" ? "selected" : ""}>h3</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Başlık</label>
-            <input type="text" data-type="p-title" data-index="${index}" value="${escapeAttr(item.title)}">
-          </div>
-          <div class="field">
-            <label>Metin</label>
-            <textarea data-type="p-text" data-index="${index}">${escapeHtml(item.text)}</textarea>
-          </div>
-          <div class="field">
-            <label>Resim URL</label>
-            <input type="text" data-type="p-image" data-index="${index}" value="${escapeAttr(item.imageUrl)}">
-          </div>
-          <div class="field">
-            <label>Resim Alt Metni</label>
-            <input type="text" data-type="p-alt" data-index="${index}" value="${escapeAttr(item.alt)}">
-          </div>
-        `;
-        container.appendChild(wrap);
-      });
-    }
+<div id="editor" contenteditable="true">
 
-    function renderVideoInputs() {
-      const container = document.getElementById("videosContainer");
-      container.innerHTML = "";
-      state.videos.forEach((item, index) => {
-        const wrap = document.createElement("div");
-        wrap.className = "panel";
-        wrap.innerHTML = `
-          <div class="section-header">
-            <div class="section-title">Video ${index + 1}</div>
-          </div>
-          <div class="field">
-            <label>Video Başlığı</label>
-            <input type="text" data-type="v-title" data-index="${index}" value="${escapeAttr(item.title)}">
-          </div>
-          <div class="field">
-            <label>YouTube URL veya ID</label>
-            <input type="text" data-type="v-url" data-index="${index}" value="${escapeAttr(item.youtubeUrl)}">
-          </div>
-        `;
-        container.appendChild(wrap);
-      });
-    }
+<div class="product-detail-section">
 
-    function renderSpecInputs() {
-      const container = document.getElementById("specsContainer");
-      container.innerHTML = "";
-      state.specs.forEach((item, index) => {
-        const wrap = document.createElement("div");
-        wrap.className = "panel";
-        wrap.innerHTML = `
-          <div class="section-header">
-            <div class="section-title">Satır ${index + 1}</div>
-          </div>
-          <div class="field">
-            <label>Özellik</label>
-            <input type="text" data-type="s-key" data-index="${index}" value="${escapeAttr(item.key)}">
-          </div>
-          <div class="field">
-            <label>Değer</label>
-            <textarea data-type="s-value" data-index="${index}">${escapeHtml(item.value)}</textarea>
-          </div>
-        `;
-        container.appendChild(wrap);
-      });
-    }
+<div class="paragraph-1" style="flex-direction:row-reverse">
+<div>
+<h1>Başlığa tıkla düzenle</h1>
+<p>Metne tıkla düzenle</p>
+</div>
+<img src="https://placehold.co/300x300">
+</div>
 
-    function bindGeneralInputs() {
-      document.getElementById("logoUrl").addEventListener("input", (e) => { state.logoUrl = e.target.value; renderAll(); });
-      document.getElementById("logoAlt").addEventListener("input", (e) => { state.logoAlt = e.target.value; renderAll(); });
-      document.getElementById("logoWidth").addEventListener("input", (e) => { state.logoWidth = e.target.value; renderAll(); });
-      document.getElementById("specTitle").addEventListener("input", (e) => { state.specTitle = e.target.value; renderAll(); });
-    }
+<div class="paragraph-2">
+<div>
+<h2>Başlık</h2>
+<p>Metin</p>
+</div>
+<img src="https://placehold.co/300x300">
+</div>
 
-    function bindDynamicInputs() {
-      document.querySelectorAll("[data-type]").forEach((el) => {
-        el.addEventListener("input", (e) => {
-          const type = e.target.dataset.type;
-          const index = Number(e.target.dataset.index);
-          const value = e.target.value;
+<div class="paragraph-3" style="flex-direction:row-reverse">
+<div>
+<h2>Başlık</h2>
+<p>Metin</p>
+</div>
+<img src="https://placehold.co/300x300">
+</div>
 
-          if (type === "p-tag") state.paragraphs[index].headingTag = value;
-          if (type === "p-title") state.paragraphs[index].title = value;
-          if (type === "p-text") state.paragraphs[index].text = value;
-          if (type === "p-image") state.paragraphs[index].imageUrl = value;
-          if (type === "p-alt") state.paragraphs[index].alt = value;
+<div class="paragraph-4">
+<div>
+<h2>Başlık</h2>
+<p>Metin</p>
+</div>
+<img src="https://placehold.co/300x300">
+</div>
 
-          if (type === "v-title") state.videos[index].title = value;
-          if (type === "v-url") state.videos[index].youtubeUrl = value;
+</div>
 
-          if (type === "s-key") state.specs[index].key = value;
-          if (type === "s-value") state.specs[index].value = value;
+</div>
 
-          renderAll(false);
-        });
+<script>
+function copyHTML(){
+  const html = document.getElementById("editor").innerHTML;
+  navigator.clipboard.writeText(html);
+  alert("Kopyalandı");
+}
+</script>
 
-        el.addEventListener("change", (e) => {
-          if (e.target.dataset.type === "p-tag") {
-            state.paragraphs[Number(e.target.dataset.index)].headingTag = e.target.value;
-            renderAll(false);
-          }
-        });
-      });
-    }
-
-    function hydrateLiteYouTube(scope) {
-      scope.querySelectorAll(".yt-lite").forEach((container) => {
-        if (container.dataset.bound === "1") return;
-        container.dataset.bound = "1";
-        container.addEventListener("click", () => {
-          const videoId = container.dataset.videoId;
-          if (!videoId) return;
-          container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        });
-      });
-    }
-
-    function renderAll(refreshInputs = true) {
-      const html = generateOutputHtml();
-      const previewMount = document.getElementById("previewMount");
-      previewMount.innerHTML = html;
-      hydrateLiteYouTube(previewMount);
-      document.getElementById("outputCode").textContent = html;
-
-      if (refreshInputs) {
-        renderParagraphInputs();
-        renderVideoInputs();
-        renderSpecInputs();
-        bindDynamicInputs();
-      }
-    }
-
-    document.getElementById("addParagraph").addEventListener("click", () => {
-      state.paragraphs.push({
-        headingTag: "h2",
-        title: "Yeni Başlık",
-        text: "Yeni paragraf metni.",
-        imageUrl: "https://placehold.co/500x500",
-        alt: `gorsel${state.paragraphs.length + 1}`
-      });
-      renderAll();
-    });
-
-    document.getElementById("removeParagraph").addEventListener("click", () => {
-      if (state.paragraphs.length > 1) {
-        state.paragraphs.pop();
-        renderAll();
-      }
-    });
-
-    document.getElementById("addVideo").addEventListener("click", () => {
-      state.videos.push({
-        title: "Yeni Video Başlığı",
-        youtubeUrl: "https://www.youtube.com/watch?v="
-      });
-      renderAll();
-    });
-
-    document.getElementById("removeVideo").addEventListener("click", () => {
-      if (state.videos.length > 1) {
-        state.videos.pop();
-        renderAll();
-      }
-    });
-
-    document.getElementById("addSpec").addEventListener("click", () => {
-      state.specs.push({
-        key: "Yeni Özellik",
-        value: "Yeni değer"
-      });
-      renderAll();
-    });
-
-    document.getElementById("removeSpec").addEventListener("click", () => {
-      if (state.specs.length > 1) {
-        state.specs.pop();
-        renderAll();
-      }
-    });
-
-    document.getElementById("copyCodeBtn").addEventListener("click", async () => {
-      const html = generateOutputHtml();
-      try {
-        await navigator.clipboard.writeText(html);
-        const btn = document.getElementById("copyCodeBtn");
-        const old = btn.textContent;
-        btn.textContent = "Kopyalandı";
-        setTimeout(() => btn.textContent = old, 1500);
-      } catch {
-        alert("Kopyalama başarısız oldu.");
-      }
-    });
-
-    bindGeneralInputs();
-    renderAll();
-  </script>
 </body>
 </html>
