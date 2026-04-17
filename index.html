@@ -169,16 +169,13 @@
 
 <script>
 
-// ===== EDIT MODE =====
+// ===== EDIT =====
 document.querySelectorAll("#editor h1,#editor h2,#editor p,#editor td,#editor th,#editor li")
 .forEach(el=> el.contentEditable="true");
 
-// ===== IMAGE CHANGE (VIDEO HARİÇ) =====
+// ===== IMAGE (video hariç) =====
 document.querySelectorAll("#editor img").forEach(img=>{
-
-  // video içindeki img ise SKIP
   if(img.closest(".video-container")) return;
-
   img.style.cursor="pointer";
   img.onclick=function(){
     let url=prompt("Görsel URL");
@@ -186,31 +183,121 @@ document.querySelectorAll("#editor img").forEach(img=>{
   }
 });
 
-// ===== YOUTUBE LINK =====
+// ===== YOUTUBE =====
 document.querySelectorAll("#editor .video-container").forEach(v=>{
   v.style.cursor="pointer";
   v.onclick=function(){
 
-    let url = prompt("YouTube linki yapıştır");
+    let url=prompt("YouTube linki");
     if(!url) return;
 
     let id="";
-
-    if(url.includes("youtube.com")){
-      id = url.split("v=")[1]?.split("&")[0];
-    } 
-    else if(url.includes("youtu.be")){
-      id = url.split("/").pop();
-    }
+    if(url.includes("youtube.com")) id=url.split("v=")[1]?.split("&")[0];
+    else if(url.includes("youtu.be")) id=url.split("/").pop();
 
     if(id){
       v.setAttribute("data-videoid",id);
       v.querySelector("img").src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";
-    } else {
-      alert("geçersiz link");
     }
   }
 });
+
+// ===== PARAGRAPH + - =====
+let directionToggle = false;
+
+function addParagraphControls(){
+
+  let section = document.querySelector("#editor .product-detail-section");
+  if(!section) return;
+
+  let paragraphs = section.querySelectorAll("[class^='paragraph-']");
+  let last = paragraphs[paragraphs.length-1];
+
+  if(!last) return;
+
+  document.querySelectorAll(".para-controls").forEach(el=>el.remove());
+
+  let box = document.createElement("div");
+  box.className="para-controls";
+  box.style.textAlign="right";
+
+  let plus = document.createElement("button");
+  plus.innerText="+";
+
+  let minus = document.createElement("button");
+  minus.innerText="-";
+
+  plus.onclick=function(){
+
+    let clone = last.cloneNode(true);
+
+    directionToggle = !directionToggle;
+    clone.style.flexDirection = directionToggle ? "row" : "row-reverse";
+
+    last.after(clone);
+    addParagraphControls();
+  };
+
+  minus.onclick=function(){
+    if(paragraphs.length > 1){
+      last.remove();
+      addParagraphControls();
+    }
+  };
+
+  box.appendChild(plus);
+  box.appendChild(minus);
+
+  last.appendChild(box);
+}
+
+addParagraphControls();
+
+// ===== TABLE + - (FIXLİ) =====
+function addTableControls(){
+
+  let table = document.querySelector("#editor .specs-container tbody");
+  if(!table) return;
+
+  document.querySelectorAll(".row-controls").forEach(el=>el.remove());
+
+  let rows = table.querySelectorAll("tr");
+  let last = rows[rows.length-1];
+
+  let lastTd = last.querySelector("td:last-child");
+  if(!lastTd) return;
+
+  let box = document.createElement("div");
+  box.className="row-controls";
+  box.style.textAlign="right";
+  box.style.marginTop="5px";
+
+  let plus=document.createElement("button");
+  plus.innerText="+";
+
+  let minus=document.createElement("button");
+  minus.innerText="-";
+
+  plus.onclick=function(){
+    let clone = last.cloneNode(true);
+    table.appendChild(clone);
+    addTableControls();
+  };
+
+  minus.onclick=function(){
+    if(rows.length>1){
+      last.remove();
+      addTableControls();
+    }
+  };
+
+  box.appendChild(plus);
+  box.appendChild(minus);
+
+  lastTd.appendChild(box);
+}
+
+addTableControls();
 
 // ===== EXPORT =====
 function copyHTML(){
@@ -220,6 +307,11 @@ let clone = document.getElementById("editor").cloneNode(true);
 // contenteditable temizle
 clone.querySelectorAll("[contenteditable]").forEach(el=>{
   el.removeAttribute("contenteditable");
+});
+
+// kontrol butonlarını sil
+clone.querySelectorAll(".para-controls,.row-controls").forEach(el=>{
+  el.remove();
 });
 
 let html = clone.innerHTML;
