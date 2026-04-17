@@ -1,127 +1,156 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<title>Ürün Açıklama Oluşturucu</title>
-<style>
-body{font-family:Arial;padding:20px;background:#f5f5f5}
-input,textarea{width:100%;margin-bottom:10px;padding:8px}
-button{padding:10px 20px;cursor:pointer}
-#output{white-space:pre-wrap;background:#fff;padding:15px;margin-top:20px}
-</style>
-</head>
-<body>
 
-<h2>Ürün İçerik Generator</h2>
 
-<input id="title" placeholder="Ürün Başlığı">
-<input id="brandLogo" placeholder="Marka Logo URL">
-<input id="img1" placeholder="Görsel 1">
-<input id="img2" placeholder="Görsel 2">
-<input id="img3" placeholder="Görsel 3">
-<input id="img4" placeholder="Görsel 4">
-
-<textarea id="p1" placeholder="Paragraf 1"></textarea>
-<textarea id="p2" placeholder="Paragraf 2"></textarea>
-<textarea id="p3" placeholder="Paragraf 3"></textarea>
-<textarea id="p4" placeholder="Paragraf 4"></textarea>
-
-<input id="video" placeholder="YouTube Video ID">
-
-<textarea id="specs" placeholder="Teknik Özellikler (Örnek: Özellik:Değer)"></textarea>
-
-<button onclick="generate()">HTML Üret</button>
-
-<div id="output"></div>
-
-<script>
-function generate(){
-let title=document.getElementById("title").value;
-let logo=document.getElementById("brandLogo").value;
-let img1=document.getElementById("img1").value;
-let img2=document.getElementById("img2").value;
-let img3=document.getElementById("img3").value;
-let img4=document.getElementById("img4").value;
-let p1=document.getElementById("p1").value;
-let p2=document.getElementById("p2").value;
-let p3=document.getElementById("p3").value;
-let p4=document.getElementById("p4").value;
-let video=document.getElementById("video").value;
-let specsRaw=document.getElementById("specs").value;
-
-let specsHTML="";
-specsRaw.split("\n").forEach(line=>{
-let parts=line.split(":");
-if(parts.length==2){
-specsHTML+=`<tr><th>${parts[0]}</th><td>${parts[1]}</td></tr>`;
-}
-});
-
-let html=`
-<div class="product-detail-section-logo" style="display: grid; place-items: center; margin-bottom: 20px;">
-<img src="${logo}" style="width:400px;">
-</div>
-
+<style>.product-detail-section {  background-color: #FFFFFF;  line-height: 1.5; }/* Paragraflar - 4 adet dinamik */.product-detail-section .paragraph-1,.product-detail-section .paragraph-2,.product-detail-section .paragraph-3,.product-detail-section .paragraph-4 {  display: flex;  align-items: center;  gap: 30px;  padding: 15px;  color: black;  margin: 20px 0;  background-color: #F2F2F2;  border: 1px solid #F2F2F2;  border-radius: 10px;  font-size: 16px; }/* Başlık boyutları - 4 adet */.product-detail-section .paragraph-1 h1,.product-detail-section .paragraph-2 h2,.product-detail-section .paragraph-3 h2,.product-detail-section .paragraph-4 h2 {  font-size: 24px;}/* Paragraf metin boyutu - 4 adet */.product-detail-section .paragraph-1 p,.product-detail-section .paragraph-2 p,.product-detail-section .paragraph-3 p,.product-detail-section .paragraph-4 p {  font-size: 16px;}/* Paragraf yönleri - 4 adet dinamik */.product-detail-section .paragraph-1 {  flex-direction: row-reverse;}.product-detail-section .paragraph-2 {  flex-direction: row;}.product-detail-section .paragraph-3 {  flex-direction: row-reverse;}.product-detail-section .paragraph-4 {  flex-direction: row;}/* product-info alanı - 4 adet */.product-detail-section .paragraph-1 .product-info,.product-detail-section .paragraph-2 .product-info,.product-detail-section .paragraph-3 .product-info,.product-detail-section .paragraph-4 .product-info {  flex: 1;}/* Paragraf içi resimler - 4 adet */.product-detail-section .paragraph-1 img,.product-detail-section .paragraph-2 img,.product-detail-section .paragraph-3 img,.product-detail-section .paragraph-4 img {  max-width: 100%;   height: auto;  object-fit: cover;  border-radius: 10px;  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);  border: 1px solid #ccc;  transition: all 0.3s ease-in-out;}/* Hover efekti - 4 adet */.product-detail-section .paragraph-1 img:hover,.product-detail-section .paragraph-2 img:hover,.product-detail-section .paragraph-3 img:hover,.product-detail-section .paragraph-4 img:hover {  transform: scale(1.05);  border-color: #F5F5F5;}/* Öne Çıkan Özellikler bölümü */.product-detail-section .features-section {  display: flex;  flex-wrap: wrap;  justify-content: space-between;  align-items: flex-start;  padding: 20px;  background-color: #F2F2F2;  border-radius: 10px;  margin: 20px 0;  position: relative;}.product-detail-section .features-section::before {  content: '';  position: absolute;  width: 2px;  background-color: #ccc;  top: 20px;  bottom: 20px;  left: 50%;  transform: translateX(-50%);}/* Sol / Sağ alanlar */.product-detail-section .features-left,.product-detail-section .features-right {  width: 48%;  padding: 0 1%;  box-sizing: border-box;  text-align: left;}.product-detail-section .features-left h2,.product-detail-section .features-right h2 {  text-align: center;  color: #010101;  margin-bottom: 20px;}.product-detail-section .features-left ul,.product-detail-section .features-right ul {  list-style-type: none;  padding: 0;  margin: 0;}/* Yeni eklenen stiller */.product-detail-section .features-left .plugin-categories,.product-detail-section .features-right .feature-list {  display: flex;  flex-wrap: wrap;}.product-detail-section .category,.product-detail-section .feature-item {  width: 50%;  box-sizing: border-box;  padding: 10px;}.product-detail-section .category h3,.product-detail-section .feature-item h3 {  font-size: 16px;  margin-bottom: 10px;  color: #010101;}.product-detail-section .category ul,.product-detail-section .feature-item ul {  list-style-type: none;  padding: 0;  margin: 0;}.product-detail-section .category li,.product-detail-section .feature-item li {  font-size: 14px;  margin-bottom: 5px;  position: relative;  padding-left: 20px;}.product-detail-section .category li::before,.product-detail-section .feature-item li::before {  content: '✔';  color: #010101;  position: absolute;  left: 0;  top: 0;}/* Video kapsayıcısı */.product-detail-section .video-container {  position: relative;  width: 100%;  max-width: 1000px;  margin: 0 auto;  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */  height: 0;  overflow: hidden;}.product-detail-section .video-container iframe {  position: absolute;  top: 0;  left: 0;  width: 100%;  height: 100%;  border: none;}/* YouTube Thumbnail-Click Lazy Loading */.product-detail-section .video-container.yt-lite {  cursor: pointer;  background-color: #000;}.product-detail-section .video-container.yt-lite .yt-playbtn {  position: absolute;  top: 50%;  left: 50%;  transform: translate(-50%, -50%);  width: 68px;  height: 48px;  background-color: rgba(255, 0, 0, 0.8);  border-radius: 14px;  z-index: 1;  pointer-events: none;  transition: background-color 0.2s ease;}.product-detail-section .video-container.yt-lite .yt-playbtn::before {  content: '';  display: block;  position: absolute;  top: 50%;  left: 55%;  transform: translate(-50%, -50%);  border-style: solid;  border-width: 10px 0 10px 18px;  border-color: transparent transparent transparent #fff;}.product-detail-section .video-container.yt-lite:hover .yt-playbtn {  background-color: rgba(255, 0, 0, 1);}/* Video bölümü başlığı */.product-detail-section .video-section h2 {  font-size: 24px;  color: #010101;  margin-bottom: 20px;}/* Video bölümünün kendisi */.product-detail-section .video-section {  text-align: center;  padding: 20px;  margin: 20px 0;  background-color: #F2F2F2;  border-radius: 10px;}/* Teknik Özellikler bölümü */.product-detail-section .specs-container {  text-align: left;  margin: 20px 0;  padding: 0;  border-radius: 10px;  overflow: hidden;  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);}.product-detail-section h1.red-box {  background-color: #F5F5F5;  color: #201C3E;  padding: 10px;  margin: 0;  text-align: center;}.product-detail-section .specs-container table {  width: 100%;  border-collapse: collapse;  margin: 0 auto;  font-size: 1rem;  table-layout: fixed;}.product-detail-section .specs-container table th:first-child,.product-detail-section .specs-container table td:first-child {  width: 35%;  /* Özellik sütunu */}.product-detail-section .specs-container table th:last-child,.product-detail-section .specs-container table td:last-child {  width: 65%;  /* Detay sütunu */}.product-detail-section .specs-container table th,.product-detail-section .specs-container table td {  padding: 10px;  border-bottom: 1px solid #ddd;  text-align: left;  vertical-align: top;}.product-detail-section .specs-container table thead th {  background-color: #F5F5F5;  color: #333;}/* Responsive ayarlar (768px altı) - 4 adet dinamik */@media (max-width: 768px) {  .product-detail-section .paragraph-1,  .product-detail-section .paragraph-2,  .product-detail-section .paragraph-3,  .product-detail-section .paragraph-4,  .product-detail-section .features-section {    flex-direction: column;    align-items: center;  }  .product-detail-section .paragraph-1 img,  .product-detail-section .paragraph-2 img,  .product-detail-section .paragraph-3 img,  .product-detail-section .paragraph-4 img {    width: 100%;  }  .product-detail-section .features-section::before {    display: none;  }  .product-detail-section .features-left,  .product-detail-section .features-right {    width: 100%;    padding: 0 15px;  }  .product-detail-section .features-left .plugin-categories,  .product-detail-section .features-right .feature-list {    flex-direction: column;  }  .product-detail-section .category,  .product-detail-section .feature-item {    width: 100%;  }  .product-detail-section .features-left li,  .product-detail-section .features-right li {    font-size: 16px;    margin-bottom: 10px;    padding-left: 0;    text-align: left;    display: flex;    align-items: flex-start;  }  .product-detail-section .features-left li::before,  .product-detail-section .features-right li::before {    content: '✔';    color: #010101;    margin-right: 10px;    position: static;  }  .product-detail-section .video-container {    max-width: 560px;  }  .product-detail-section .specs-container {    overflow-x: auto;  }  .product-detail-section table {    width: 100%;    table-layout: fixed;  }  .product-detail-section th,  .product-detail-section td {    font-size: 1rem;    padding: 10px;  }  .product-detail-section th:first-child,  .product-detail-section td:first-child {    width: 35%;  }  .product-detail-section th:last-child,  .product-detail-section td:last-child {    width: 65%;  }}</style>
+<div class="product-detail-section-logo" style="display: grid; place-items: center; margin-bottom: 20px;"><img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/arturia.jpg" alt="Marka Logosu" style="width: 400px; height: auto; cursor: pointer;"></div>
 <div class="product-detail-section">
-
 <div class="paragraph-1">
 <div class="product-info">
-<h1>${title}</h1>
-<p>${p1}</p>
+<h1>Champagne Özel Baskı ile Setup’ınıza Modern Bir İmza</h1>
+<p>Arturia MiniLab 3 Champagne, sınırlı sayıda üretilen özel tasarımıyla masanızda “temiz ve modern” bir görünüm arayanlara hitap eder. Kompakt gövde, stüdyo köşesinden mobil prodüksiyon çantasına kadar her senaryoda düzenli bir kurulum hissi verir. Renkli RGB pad’lerle tamamlanan şık yüzey, hem sahnede hem ev stüdyosunda görsel bütünlüğü korur. Minimal ama karakterli duruşu sayesinde, kontrolcünüz yalnızca bir araç değil, setup’ın estetik parçası hâline gelir.</p>
+<h2>Dokunsal Kontroller ve Mini Ekranla Akıcı Yönetim</h2>
+<p>Arturia MiniLab 3 Champagne üzerinde çalışırken en çok hissedilen şey, kontrol yüzeyinin “sezgisel” kurgusudur. Dokunsal düğmeler, pad’ler ve kaydırıcılar elinizin altında net bir geri bildirim verir; ayar yaparken gözünüz sürekli bilgisayara gitmek zorunda kalmaz. Mini ekran ve tıklanabilir tarama düğmesi, parametreleri hızlıca izlemenizi ve seçimleri pratik biçimde yapmanızı sağlar. Bu düzen, yeni başlayanlar için öğrenmeyi kolaylaştırır; deneyimli kullanıcılar içinse hız kazandıran bir avantajdır.</p>
 </div>
-<img src="${img1}">
-</div>
-
+<img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/minilab3_champagne/minilab3_champagne_4.webp" alt="arturia-arturia-minilab-3-champagne-ozel-seri-asimetrik-e-ticaret-gorsel1" style="width: 500px; height: auto; cursor: pointer;"></div>
 <div class="paragraph-2">
 <div class="product-info">
-<h2>${title}</h2>
-<p>${p2}</p>
+<h2>Tak-Çalıştır İş Akışı: DAW Entegrasyonu ile Hemen Üretim</h2>
+<p>Arturia MiniLab 3 Champagne, kurulum süresini kısaltan tak-çalıştır yaklaşımıyla öne çıkar. Özel yazılmış DAW scriptleri sayesinde önde gelen DAW yazılımlarıyla sezgisel bir entegrasyon sağlanır; temel kontrolleri eşleştirmek için uzun ayarlar yapmanız gerekmez. DAW transport kontrolü, proje içinde akışı hızlandırır ve fikir yakalama anlarını bölmez. Ayrıca 8 adet DAW ve kullanıcı preset’i, farklı çalışma tarzlarına uyum sağlar. Böylece tek bir kontrolcüyle birden fazla prodüksiyon düzenine rahatça geçilir.</p>
+<h2>Arpeggiator, Chord Modu ve Transpoze ile Yaratıcılığı Açın</h2>
+<p>İlham geldiğinde hız önemlidir; Arturia MiniLab 3 Champagne bu noktada yaratıcı modlarıyla süreci destekler. Dahili arpeggiator, Hold ve Chord modlarıyla tek notadan zengin armonilere uzanan pratik bir yol sunar. Oktav yukarı-aşağı düğmeleri ve yarı ton transpoze, farklı tonalitelere anında geçmeyi kolaylaştırır; fikirler “deneme-yanılma” yerine akış içinde şekillenir. Pad’lerin velocity ve pressure hassasiyeti, ritim ve performans dinamiklerini daha canlı kılar. Sonuç, daha hızlı eskiz, daha kontrollü ifade olur.</p>
 </div>
-<img src="${img2}">
-</div>
-
+<img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/minilab3_champagne/minilab3_champagne_3.webp" alt="arturia-arturia-minilab-3-champagne-ozel-seri-asimetrik-e-ticaret-gorsel2" style="width: 500px; height: auto; cursor: pointer;"></div>
 <div class="paragraph-3">
 <div class="product-info">
-<h2>${title}</h2>
-<p>${p3}</p>
+<h2>Analog Lab Intro ile 500 Seçilmiş Ses: İlham Hep Hazır</h2>
+<p>Arturia MiniLab 3 Champagne, yalnızca bir MIDI kontrolcü değil; aynı zamanda güçlü bir yazılım ekosistemine açılan kapıdır. Analog Lab’ın geniş kütüphanesinden seçilmiş 500 ses, farklı türlerde hızlı başlangıç yapmayı kolaylaştırır ve miks içinde “hazır” karakterler sunar. Synth dokuları, klavye tonları ve modern preset’ler; fikir üretiminden düzenlemeye kadar her aşamada elinizin altında kalır. Arturia sanal enstrümanlarıyla uyumlu çalışma yapısı, kontrol hissini daha tutarlı hâle getirir ve üretim sürecini akıcı tutar.</p>
+<h2>Premium Yazılım Paketiyle Tam Prodüksiyon Zinciri</h2>
+<p>Arturia MiniLab 3 Champagne kutusundan çıkan yazılım paketi, müzik üretimini tek noktadan başlatmayı hedefler. Ableton Live Lite ile aranje ve kayıt tarafı hızlanır; UVI Model D ve Native Instruments The Gentleman gibi enstrümanlar ise farklı piyano karakterlerini projeye taşır. Loopcloud sample pack’leri ve abonelik içeriği, beat ve düzenleme aşamasında pratik malzeme sağlar. Melodics aboneliği, performans ve kontrolcü hakimiyetini geliştirmek isteyenler için iyi bir çalışma alanı oluşturur. Böylece hem ses hem iş akışı tarafı dengeli biçimde tamamlanır.</p>
 </div>
-<img src="${img3}">
-</div>
-
+<img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/minilab3_champagne/minilab3_champagne_2.webp" alt="arturia-arturia-minilab-3-champagne-ozel-seri-asimetrik-e-ticaret-gorsel3" style="width: 500px; height: auto; cursor: pointer;"></div>
 <div class="paragraph-4">
 <div class="product-info">
-<h2>${title}</h2>
-<p>${p4}</p>
+<h2>Dayanıklı ve Çevreci Yapı: Uzun Ömürlü Kullanım</h2>
+<p>Arturia MiniLab 3 Champagne, uzun ömür ve sürdürülebilirlik odağıyla tasarlanmış bir kontrolcüdür. Sağlam ve taşınabilir yapı, günlük kullanımın temposuna uyum sağlar; ev stüdyosundan prova odasına taşınırken güven verir. Minimum %50 geri dönüştürülmüş plastik hammadde kullanımı ve %100 geri dönüştürülmüş ambalaj, çevresel etkiyi azaltan önemli detaylardır. Bu yaklaşım, yalnızca bugünü değil uzun vadeli kullanım alışkanlıklarını da düşünür. Üretim kalitesiyle birlikte ele alındığında, düzenli performans ve istikrarlı bir deneyim hedeflenmiştir.</p>
+<h2>Stüdyo, Sahne ve Mobil Kurulumlar İçin Esnek Bağlantı</h2>
+<p>Arturia MiniLab 3 Champagne, bilgisayarla USB-C üzerinden çalışırken aynı zamanda harici enstrümanlara açılan bir merkez gibi davranır. USB beslemeli yapı, ekstra adaptör karmaşasını azaltır; mobil kurulumlarda pratiklik sağlar. MIDI 5-pin çıkış, donanım synth’ler ve dış ekipmanlarla bağlantıyı kolaylaştırır; pedal kontrol girişi ise sustain, expression veya footswitch seçenekleriyle performansı genişletir. Pitch bend ve modülasyon için kapasitif touch sensörler, ifade alanını artırır. Bu esneklik, farklı prodüksiyon ve performans senaryolarında kontrolü elinizde tutar.</p>
 </div>
-<img src="${img4}">
-</div>
-
+<img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/minilab3_champagne/imgi_73_BeFunky-projectaaaaaa.webp" alt="arturia-arturia-minilab-3-champagne-ozel-seri-asimetrik-e-ticaret-gorsel4" style="width: 500px; height: auto; cursor: pointer;"></div>
 <div class="video-section">
-<h2>${title} | Video</h2>
-<div class="video-container yt-lite" data-video-id="${video}">
-<img src="https://i.ytimg.com/vi/${video}/hqdefault.jpg">
-<div class="yt-playbtn"></div>
+<h2>Arturia | Arturia MiniLab 3 Champagne | Özel Seri | Ürün Tanıtımı</h2>
+<div class="video-container yt-lite" data-videoid="iDQfeVzYjas" style="cursor: pointer;"><img src="https://i.ytimg.com/vi/iDQfeVzYjas/hqdefault.jpg" alt="Arturia | Arturia MiniLab 3 Champagne | Özel Seri | Ürün Tanıtımı" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; cursor: pointer;">
+<div class="yt-playbtn">&nbsp;</div>
 </div>
 </div>
-
 <div class="specs-container">
-<h1 class="red-box">${title} | Teknik Özellikler</h1>
+<h1 class="red-box">Arturia | Arturia MiniLab 3 Champagne | Özel Seri | Ürün Bilgisi</h1>
 <table>
 <thead>
-<tr><th>Özellik</th><th>Değer</th></tr>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
 </thead>
 <tbody>
-${specsHTML}
+<tr>
+<th scope="row">Klavye</th>
+<td>25 nota, velocity-sensitive slim klavye</td>
+</tr>
+<tr>
+<th scope="row">Pad Yapısı</th>
+<td>
+<ul>
+<li>2 bankalı 8 adet pad</li>
+<li>RGB ışıklandırma</li>
+<li>Velocity ve pressure hassasiyeti</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">Kontroller</th>
+<td>
+<ul>
+<li>8 rotary encoder</li>
+<li>4 slider</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">Ekran ve Gezinme</th>
+<td>Mini ekran ve tıklanabilir tarama düğmesi</td>
+</tr>
+<tr>
+<th scope="row">Yaratıcı Modlar</th>
+<td>
+<ul>
+<li>Dahili arpeggiator</li>
+<li>Hold modu</li>
+<li>Chord (akor) modu</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">DAW Entegrasyonu</th>
+<td>
+<ul>
+<li>Özel DAW scriptleri</li>
+<li>8 DAW ve kullanıcı preset’i</li>
+<li>DAW transport kontrol</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">Oktav / Transpoze</th>
+<td>
+<ul>
+<li>Oktav yukarı-aşağı düğmeleri</li>
+<li>Yarı ton transpoze</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">Performans Kontrolleri</th>
+<td>
+<ul>
+<li>Pitch bend için kapasitif touch sensör</li>
+<li>Modülasyon için kapasitif touch sensör</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th scope="row">Pedal Girişi</th>
+<td>Sustain, expression veya footswitch için kontrol girişi</td>
+</tr>
+<tr>
+<th scope="row">Bilgisayar Bağlantısı</th>
+<td>USB-C MIDI</td>
+</tr>
+<tr>
+<th scope="row">Harici MIDI</th>
+<td>MIDI 5-pin çıkış</td>
+</tr>
+<tr>
+<th scope="row">Sürdürülebilir Malzeme</th>
+<td>Minimum %50 geri dönüştürülmüş plastik hammadde</td>
+</tr>
+<tr>
+<th scope="row">Ambalaj</th>
+<td>%100 geri dönüştürülmüş ambalaj</td>
+</tr>
+<tr>
+<th scope="row">Dahil Yazılımlar</th>
+<td>
+<ul>
+<li>Analog Lab Intro (500 ses)</li>
+<li>Ableton Live Lite</li>
+<li>UVI Model D</li>
+<li>Native Instruments The Gentleman</li>
+<li>Loopcloud sample packs &amp; subscription</li>
+<li>Melodics subscription</li>
+</ul>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
-
 </div>
-`;
 
-document.getElementById("output").innerText=html;
-}
-</script>
-
-</body>
-</html>
