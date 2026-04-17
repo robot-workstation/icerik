@@ -3,11 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <title>Editor</title>
+<style>
+*{box-sizing:border-box;}
+.video-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:15px;
+width:100%;
+margin:0 auto;
+align-items:start;
+}
+.video-grid .video-container{
+width:100% !important;
+max-width:none !important;
+margin:0 !important;
+}
+.video-grid .video-container:only-child{
+grid-column:1 / span 2;
+width:min(100%,1000px) !important;
+margin:0 auto !important;
+}
+.para-controls,
+.row-controls,
+.video-controls{
+text-align:right;
+margin-top:8px;
+}
+</style>
 </head>
 <body>
 
 <div id="editor">
-
 <style>.product-detail-section {  background-color: #FFFFFF;  line-height: 1.5; }/* Paragraflar - 4 adet dinamik */.product-detail-section .paragraph-1,.product-detail-section .paragraph-2,.product-detail-section .paragraph-3,.product-detail-section .paragraph-4 {  display: flex;  align-items: center;  gap: 30px;  padding: 15px;  color: black;  margin: 20px 0;  background-color: #F2F2F2;  border: 1px solid #F2F2F2;  border-radius: 10px;  font-size: 16px; }/* Başlık boyutları - 4 adet */.product-detail-section .paragraph-1 h1,.product-detail-section .paragraph-2 h2,.product-detail-section .paragraph-3 h2,.product-detail-section .paragraph-4 h2 {  font-size: 24px;}/* Paragraf metin boyutu - 4 adet */.product-detail-section .paragraph-1 p,.product-detail-section .paragraph-2 p,.product-detail-section .paragraph-3 p,.product-detail-section .paragraph-4 p {  font-size: 16px;}/* Paragraf yönleri - 4 adet dinamik */.product-detail-section .paragraph-1 {  flex-direction: row-reverse;}.product-detail-section .paragraph-2 {  flex-direction: row;}.product-detail-section .paragraph-3 {  flex-direction: row-reverse;}.product-detail-section .paragraph-4 {  flex-direction: row;}/* product-info alanı - 4 adet */.product-detail-section .paragraph-1 .product-info,.product-detail-section .paragraph-2 .product-info,.product-detail-section .paragraph-3 .product-info,.product-detail-section .paragraph-4 .product-info {  flex: 1;}/* Paragraf içi resimler - 4 adet */.product-detail-section .paragraph-1 img,.product-detail-section .paragraph-2 img,.product-detail-section .paragraph-3 img,.product-detail-section .paragraph-4 img {  max-width: 100%;   height: auto;  object-fit: cover;  border-radius: 10px;  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);  border: 1px solid #ccc;  transition: all 0.3s ease-in-out;}/* Hover efekti - 4 adet */.product-detail-section .paragraph-1 img:hover,.product-detail-section .paragraph-2 img:hover,.product-detail-section .paragraph-3 img:hover,.product-detail-section .paragraph-4 img:hover {  transform: scale(1.05);  border-color: #F5F5F5;}/* Öne Çıkan Özellikler bölümü */.product-detail-section .features-section {  display: flex;  flex-wrap: wrap;  justify-content: space-between;  align-items: flex-start;  padding: 20px;  background-color: #F2F2F2;  border-radius: 10px;  margin: 20px 0;  position: relative;}.product-detail-section .features-section::before {  content: '';  position: absolute;  width: 2px;  background-color: #ccc;  top: 20px;  bottom: 20px;  left: 50%;  transform: translateX(-50%);}/* Sol / Sağ alanlar */.product-detail-section .features-left,.product-detail-section .features-right {  width: 48%;  padding: 0 1%;  box-sizing: border-box;  text-align: left;}.product-detail-section .features-left h2,.product-detail-section .features-right h2 {  text-align: center;  color: #010101;  margin-bottom: 20px;}.product-detail-section .features-left ul,.product-detail-section .features-right ul {  list-style-type: none;  padding: 0;  margin: 0;}/* Yeni eklenen stiller */.product-detail-section .features-left .plugin-categories,.product-detail-section .features-right .feature-list {  display: flex;  flex-wrap: wrap;}.product-detail-section .category,.product-detail-section .feature-item {  width: 50%;  box-sizing: border-box;  padding: 10px;}.product-detail-section .category h3,.product-detail-section .feature-item h3 {  font-size: 16px;  margin-bottom: 10px;  color: #010101;}.product-detail-section .category ul,.product-detail-section .feature-item ul {  list-style-type: none;  padding: 0;  margin: 0;}.product-detail-section .category li,.product-detail-section .feature-item li {  font-size: 14px;  margin-bottom: 5px;  position: relative;  padding-left: 20px;}.product-detail-section .category li::before,.product-detail-section .feature-item li::before {  content: '✔';  color: #010101;  position: absolute;  left: 0;  top: 0;}/* Video kapsayıcısı */.product-detail-section .video-container {  position: relative;  width: 100%;  max-width: 1000px;  margin: 0 auto;  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */  height: 0;  overflow: hidden;}.product-detail-section .video-container iframe {  position: absolute;  top: 0;  left: 0;  width: 100%;  height: 100%;  border: none;}/* YouTube Thumbnail-Click Lazy Loading */.product-detail-section .video-container.yt-lite {  cursor: pointer;  background-color: #000;}.product-detail-section .video-container.yt-lite .yt-playbtn {  position: absolute;  top: 50%;  left: 50%;  transform: translate(-50%, -50%);  width: 68px;  height: 48px;  background-color: rgba(255, 0, 0, 0.8);  border-radius: 14px;  z-index: 1;  pointer-events: none;  transition: background-color 0.2s ease;}.product-detail-section .video-container.yt-lite .yt-playbtn::before {  content: '';  display: block;  position: absolute;  top: 50%;  left: 55%;  transform: translate(-50%, -50%);  border-style: solid;  border-width: 10px 0 10px 18px;  border-color: transparent transparent transparent #fff;}.product-detail-section .video-container.yt-lite:hover .yt-playbtn {  background-color: rgba(255, 0, 0, 1);}/* Video bölümü başlığı */.product-detail-section .video-section h2 {  font-size: 24px;  color: #010101;  margin-bottom: 20px;}/* Video bölümünün kendisi */.product-detail-section .video-section {  text-align: center;  padding: 20px;  margin: 20px 0;  background-color: #F2F2F2;  border-radius: 10px;}/* Teknik Özellikler bölümü */.product-detail-section .specs-container {  text-align: left;  margin: 20px 0;  padding: 0;  border-radius: 10px;  overflow: hidden;  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);}.product-detail-section h1.red-box {  background-color: #F5F5F5;  color: #201C3E;  padding: 10px;  margin: 0;  text-align: center;}.product-detail-section .specs-container table {  width: 100%;  border-collapse: collapse;  margin: 0 auto;  font-size: 1rem;  table-layout: fixed;}.product-detail-section .specs-container table th:first-child,.product-detail-section .specs-container table td:first-child {  width: 35%;  /* Özellik sütunu */}.product-detail-section .specs-container table th:last-child,.product-detail-section .specs-container table td:last-child {  width: 65%;  /* Detay sütunu */}.product-detail-section .specs-container table th,.product-detail-section .specs-container table td {  padding: 10px;  border-bottom: 1px solid #ddd;  text-align: left;  vertical-align: top;}.product-detail-section .specs-container table thead th {  background-color: #F5F5F5;  color: #333;}/* Responsive ayarlar (768px altı) - 4 adet dinamik */@media (max-width: 768px) {  .product-detail-section .paragraph-1,  .product-detail-section .paragraph-2,  .product-detail-section .paragraph-3,  .product-detail-section .paragraph-4,  .product-detail-section .features-section {    flex-direction: column;    align-items: center;  }  .product-detail-section .paragraph-1 img,  .product-detail-section .paragraph-2 img,  .product-detail-section .paragraph-3 img,  .product-detail-section .paragraph-4 img {    width: 100%;  }  .product-detail-section .features-section::before {    display: none;  }  .product-detail-section .features-left,  .product-detail-section .features-right {    width: 100%;    padding: 0 15px;  }  .product-detail-section .features-left .plugin-categories,  .product-detail-section .features-right .feature-list {    flex-direction: column;  }  .product-detail-section .category,  .product-detail-section .feature-item {    width: 100%;  }  .product-detail-section .features-left li,  .product-detail-section .features-right li {    font-size: 16px;    margin-bottom: 10px;    padding-left: 0;    text-align: left;    display: flex;    align-items: flex-start;  }  .product-detail-section .features-left li::before,  .product-detail-section .features-right li::before {    content: '✔';    color: #010101;    margin-right: 10px;    position: static;  }  .product-detail-section .video-container {    max-width: 560px;  }  .product-detail-section .specs-container {    overflow-x: auto;  }  .product-detail-section table {    width: 100%;    table-layout: fixed;  }  .product-detail-section th,  .product-detail-section td {    font-size: 1rem;    padding: 10px;  }  .product-detail-section th:first-child,  .product-detail-section td:first-child {    width: 35%;  }  .product-detail-section th:last-child,  .product-detail-section td:last-child {    width: 65%;  }}</style>
 <div class="product-detail-section-logo" style="display: grid; place-items: center; margin-bottom: 20px;"><img src="https://www.sescibaba.com/Data/EditorFiles/urun_resim/Arturia/arturia.jpg" alt="Marka Logosu" style="width: 400px; height: auto;"></div>
 <div class="product-detail-section">
@@ -161,300 +187,333 @@
 </table>
 </div>
 </div>
-
 </div>
 
 <br><br>
 <button onclick="copyHTML()">HTML ÜRET</button>
 
 <script>
+function bindTextEditables(root=document){
+  root.querySelectorAll("#editor h1,#editor h2,#editor p,#editor td,#editor th,#editor li").forEach(el=>{
+    el.contentEditable="true";
+  });
+}
 
-// EDIT
-document.querySelectorAll("#editor h1,#editor h2,#editor p,#editor td,#editor th,#editor li")
-.forEach(el=> el.contentEditable="true");
+function bindImages(root=document){
+  root.querySelectorAll("img").forEach(img=>{
+    if(!img.closest("#editor")) return;
+    if(img.closest(".video-container")) return;
+    if(img.dataset.boundImage === "1") return;
 
-// IMAGE (video hariç)
-document.querySelectorAll("#editor img").forEach(img=>{
-  if(img.closest(".video-container")) return;
-  img.style.cursor="pointer";
-  img.onclick=function(){
-    let url=prompt("Görsel URL");
-    if(url) this.src=url;
-  }
-});
+    img.dataset.boundImage = "1";
+    img.style.cursor="pointer";
+    img.onclick=function(){
+      let url=prompt("Görsel URL");
+      if(url) this.src=url;
+    };
+  });
+}
 
-// YOUTUBE LINK
-document.querySelectorAll("#editor .video-container").forEach(v=>{
-  v.style.cursor="pointer";
-  v.onclick=function(){
-    let url=prompt("YouTube linki");
-    if(!url) return;
+function extractYoutubeId(url){
+  if(!url) return "";
+  let id="";
+  if(url.includes("youtube.com/watch?v=")) id=url.split("v=")[1]?.split("&")[0] || "";
+  else if(url.includes("youtu.be/")) id=url.split("youtu.be/")[1]?.split("?")[0] || "";
+  else if(url.includes("youtube.com/embed/")) id=url.split("embed/")[1]?.split("?")[0] || "";
+  return id;
+}
 
-    let id="";
-    if(url.includes("youtube.com")) id=url.split("v=")[1]?.split("&")[0];
-    else if(url.includes("youtu.be")) id=url.split("/").pop();
+function bindVideoContainers(root=document){
+  root.querySelectorAll("#editor .video-container").forEach(v=>{
+    if(v.dataset.boundVideo === "1") return;
 
-    if(id){
+    v.dataset.boundVideo = "1";
+    v.style.cursor="pointer";
+    v.onclick=function(){
+      let url=prompt("YouTube linki");
+      if(!url) return;
+
+      let id=extractYoutubeId(url);
+      if(!id) return;
+
       v.setAttribute("data-videoid",id);
-      v.querySelector("img").src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";
-    }
-  }
-});
 
-// PARAGRAPH + -
+      let img=v.querySelector("img");
+      if(!img){
+        img=document.createElement("img");
+        img.style.width="100%";
+        img.style.height="100%";
+        img.style.objectFit="cover";
+        img.style.position="absolute";
+        img.style.top="0";
+        img.style.left="0";
+        v.prepend(img);
+      }
+      img.src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";
+
+      let play=v.querySelector(".yt-playbtn");
+      if(!play){
+        play=document.createElement("div");
+        play.className="yt-playbtn";
+        v.appendChild(play);
+      }
+    };
+  });
+}
+
 let directionToggle=false;
 
 function addParagraphControls(){
-let section=document.querySelector("#editor .product-detail-section");
-if(!section) return;
+  let section=document.querySelector("#editor .product-detail-section");
+  if(!section) return;
 
-let paragraphs=section.querySelectorAll("[class^='paragraph-']");
-let last=paragraphs[paragraphs.length-1];
+  let paragraphs=section.querySelectorAll("[class^='paragraph-']");
+  let last=paragraphs[paragraphs.length-1];
+  if(!last) return;
 
-document.querySelectorAll(".para-controls").forEach(el=>el.remove());
+  section.querySelectorAll(".para-controls").forEach(el=>el.remove());
 
-let box=document.createElement("div");
-box.className="para-controls";
-box.style.textAlign="right";
+  let box=document.createElement("div");
+  box.className="para-controls";
 
-let plus=document.createElement("button");
-plus.innerText="+";
+  let plus=document.createElement("button");
+  plus.type="button";
+  plus.textContent="+";
 
-let minus=document.createElement("button");
-minus.innerText="-";
+  let minus=document.createElement("button");
+  minus.type="button";
+  minus.textContent="-";
 
-plus.onclick=function(){
-let clone=last.cloneNode(true);
-directionToggle=!directionToggle;
-clone.style.flexDirection=directionToggle?"row":"row-reverse";
-last.after(clone);
-addParagraphControls();
-};
+  plus.onclick=function(){
+    let clone=last.cloneNode(true);
 
-minus.onclick=function(){
-if(paragraphs.length>1){
-last.remove();
-addParagraphControls();
+    clone.querySelectorAll(".para-controls").forEach(el=>el.remove());
+
+    directionToggle=!directionToggle;
+    clone.style.flexDirection=directionToggle ? "row" : "row-reverse";
+
+    last.after(clone);
+    bindTextEditables(clone);
+    bindImages(clone);
+    addParagraphControls();
+  };
+
+  minus.onclick=function(){
+    let currentParagraphs=section.querySelectorAll("[class^='paragraph-']");
+    let currentLast=currentParagraphs[currentParagraphs.length-1];
+    if(currentParagraphs.length>1 && currentLast){
+      currentLast.remove();
+      addParagraphControls();
+    }
+  };
+
+  box.appendChild(plus);
+  box.appendChild(minus);
+  last.appendChild(box);
 }
-};
 
-box.appendChild(plus);
-box.appendChild(minus);
-last.appendChild(box);
-}
-
-addParagraphControls();
-
-// TABLE + -
 function addTableControls(){
-let table=document.querySelector("#editor .specs-container tbody");
-if(!table) return;
+  let table=document.querySelector("#editor .specs-container tbody");
+  if(!table) return;
 
-document.querySelectorAll(".row-controls").forEach(el=>el.remove());
+  table.querySelectorAll(".row-controls").forEach(el=>el.remove());
 
-let rows=table.querySelectorAll("tr");
-let last=rows[rows.length-1];
+  let rows=table.querySelectorAll("tr");
+  let last=rows[rows.length-1];
+  if(!last) return;
 
-let lastTd=last.querySelector("td:last-child");
-if(!lastTd) return;
+  let lastTd=last.querySelector("td:last-child");
+  if(!lastTd) return;
 
-let box=document.createElement("div");
-box.className="row-controls";
-box.style.textAlign="right";
+  let box=document.createElement("div");
+  box.className="row-controls";
 
-let plus=document.createElement("button");
-plus.innerText="+";
+  let plus=document.createElement("button");
+  plus.type="button";
+  plus.textContent="+";
 
-let minus=document.createElement("button");
-minus.innerText="-";
+  let minus=document.createElement("button");
+  minus.type="button";
+  minus.textContent="-";
 
-plus.onclick=function(){
-let clone=last.cloneNode(true);
-table.appendChild(clone);
-addTableControls();
-};
+  plus.onclick=function(){
+    let currentRows=table.querySelectorAll("tr");
+    let currentLast=currentRows[currentRows.length-1];
+    let clone=currentLast.cloneNode(true);
 
-minus.onclick=function(){
-if(rows.length>1){
-last.remove();
-addTableControls();
+    clone.querySelectorAll(".row-controls").forEach(el=>el.remove());
+    table.appendChild(clone);
+    bindTextEditables(clone);
+    addTableControls();
+  };
+
+  minus.onclick=function(){
+    let currentRows=table.querySelectorAll("tr");
+    let currentLast=currentRows[currentRows.length-1];
+    if(currentRows.length>1 && currentLast){
+      currentLast.remove();
+      addTableControls();
+    }
+  };
+
+  box.appendChild(plus);
+  box.appendChild(minus);
+  lastTd.appendChild(box);
 }
-};
 
-box.appendChild(plus);
-box.appendChild(minus);
-lastTd.appendChild(box);
-}
-
-addTableControls();
-
-// VIDEO GRID SETUP
 function setupVideoGrid(){
+  let section=document.querySelector("#editor .video-section");
+  if(!section) return;
 
-let section=document.querySelector("#editor .video-section");
-if(!section) return;
+  let title=section.querySelector("h2");
+  if(!title) return;
 
-let title=section.querySelector("h2");
+  let existingWrapper=section.querySelector(".video-grid");
+  if(existingWrapper) existingWrapper.remove();
 
-let wrapper=document.createElement("div");
-wrapper.className="video-grid";
+  let wrapper=document.createElement("div");
+  wrapper.className="video-grid";
 
-wrapper.style.display="grid";
-wrapper.style.gridTemplateColumns="repeat(2,1fr)";
-wrapper.style.gap="15px";
-wrapper.style.maxWidth="900px";
-wrapper.style.margin="0 auto";
+  let videos=section.querySelectorAll(".video-container");
+  videos.forEach(v=>wrapper.appendChild(v));
 
-let videos=section.querySelectorAll(".video-container");
-videos.forEach(v=>wrapper.appendChild(v));
-
-title.after(wrapper);
-
-updateVideoLayout();
+  title.after(wrapper);
+  updateVideoLayout();
 }
 
 function updateVideoLayout(){
+  let wrapper=document.querySelector("#editor .video-grid");
+  if(!wrapper) return;
 
-let wrapper=document.querySelector(".video-grid");
-if(!wrapper) return;
+  let videos=wrapper.querySelectorAll(".video-container");
+  videos.forEach(v=>{
+    v.style.width="100%";
+    v.style.maxWidth="none";
+    v.style.margin="0";
+    v.style.gridColumn="auto";
+  });
 
-let videos=wrapper.querySelectorAll(".video-container");
-
-videos.forEach(v=>{
-v.style.width="100%";
-v.style.maxWidth="100%";
-v.style.gridColumn="auto";
-});
-
-// tek video ortala
-if(videos.length===1){
-videos[0].style.gridColumn="1 / span 2";
-videos[0].style.maxWidth="600px";
-videos[0].style.margin="0 auto";
-}
+  if(videos.length===1){
+    videos[0].style.gridColumn="1 / span 2";
+    videos[0].style.width="min(100%,1000px)";
+    videos[0].style.margin="0 auto";
+  }
 }
 
-// VIDEO + -
 function addVideoControls(){
+  let section=document.querySelector("#editor .video-section");
+  if(!section) return;
 
-let section=document.querySelector("#editor .video-section");
-if(!section) return;
+  section.querySelectorAll(".video-controls").forEach(el=>el.remove());
 
-document.querySelectorAll(".video-controls").forEach(el=>el.remove());
+  let box=document.createElement("div");
+  box.className="video-controls";
 
-let box=document.createElement("div");
-box.className="video-controls";
-box.style.textAlign="right";
+  let plus=document.createElement("button");
+  plus.type="button";
+  plus.textContent="+";
 
-let plus=document.createElement("button");
-plus.innerText="+";
+  let minus=document.createElement("button");
+  minus.type="button";
+  minus.textContent="-";
 
-let minus=document.createElement("button");
-minus.innerText="-";
+  plus.onclick=function(){
+    let url=prompt("YouTube linki");
+    if(!url) return;
 
-plus.onclick=function(){
+    let id=extractYoutubeId(url);
+    if(!id) return;
 
-let url=prompt("YouTube linki");
-if(!url) return;
+    let wrapper=document.querySelector("#editor .video-grid");
+    if(!wrapper) return;
 
-let id="";
-if(url.includes("youtube.com")) id=url.split("v=")[1]?.split("&")[0];
-else if(url.includes("youtu.be")) id=url.split("/").pop();
+    let container=document.createElement("div");
+    container.className="video-container yt-lite";
+    container.setAttribute("data-videoid",id);
 
-if(!id) return;
+    container.innerHTML=`
+      <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+      <div class="yt-playbtn"></div>
+    `;
 
-let wrapper=document.querySelector(".video-grid");
+    wrapper.appendChild(container);
+    bindVideoContainers(container);
+    updateVideoLayout();
+  };
 
-let container=document.createElement("div");
-container.className="video-container yt-lite";
-container.setAttribute("data-videoid",id);
+  minus.onclick=function(){
+    let wrapper=document.querySelector("#editor .video-grid");
+    if(!wrapper) return;
 
-container.innerHTML=`
-<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
-<div class="yt-playbtn"></div>
-`;
+    let videos=wrapper.querySelectorAll(".video-container");
+    if(videos.length>1){
+      videos[videos.length-1].remove();
+      updateVideoLayout();
+    }
+  };
 
-wrapper.appendChild(container);
-updateVideoLayout();
-};
-
-minus.onclick=function(){
-
-let wrapper=document.querySelector(".video-grid");
-let videos=wrapper.querySelectorAll(".video-container");
-
-if(videos.length>1){
-videos[videos.length-1].remove();
-updateVideoLayout();
-}
-};
-
-box.appendChild(plus);
-box.appendChild(minus);
-section.appendChild(box);
+  box.appendChild(plus);
+  box.appendChild(minus);
+  section.appendChild(box);
 }
 
-// INIT
-setupVideoGrid();
-addVideoControls();
-
-// EXPORT (ASIL FIX BURADA)
 function copyHTML(){
+  let clone=document.getElementById("editor").cloneNode(true);
 
-let clone=document.getElementById("editor").cloneNode(true);
+  clone.querySelectorAll("[contenteditable]").forEach(el=>{
+    el.removeAttribute("contenteditable");
+  });
 
-// temizle
-clone.querySelectorAll("[contenteditable]").forEach(el=>{
-el.removeAttribute("contenteditable");
-});
+  clone.querySelectorAll(".para-controls,.row-controls,.video-controls").forEach(el=>{
+    el.remove();
+  });
 
-clone.querySelectorAll(".para-controls,.row-controls,.video-controls").forEach(el=>{
-el.remove();
-});
+  clone.querySelectorAll(".video-container").forEach(v=>{
+    let id=v.getAttribute("data-videoid");
+    if(!id) return;
 
-// iframe çevir
-clone.querySelectorAll(".video-container").forEach(v=>{
-let id=v.getAttribute("data-videoid");
-if(!id) return;
+    v.innerHTML=`
+      <iframe src="https://www.youtube.com/embed/${id}"
+      style="width:100%; height:100%; position:absolute; top:0; left:0;"
+      allowfullscreen></iframe>
+    `;
+  });
 
-v.innerHTML=`
-<iframe src="https://www.youtube.com/embed/${id}" 
-style="width:100%; height:100%; position:absolute; top:0; left:0;" 
-allowfullscreen></iframe>
-`;
-});
-
-// 🔥 GRID CSS EKLE (ÇÖZÜM)
-let style=document.createElement("style");
-style.innerHTML=`
+  let exportStyle=document.createElement("style");
+  exportStyle.innerHTML=`
 .video-grid{
 display:grid;
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(2,minmax(0,1fr));
 gap:15px;
-max-width:900px;
+width:100%;
 margin:0 auto;
+align-items:start;
 }
 .video-grid .video-container{
-width:100%!important;
-max-width:100%!important;
+width:100% !important;
+max-width:none !important;
+margin:0 !important;
 }
 .video-grid .video-container:only-child{
-grid-column:1/span 2;
-max-width:600px;
-margin:0 auto;
+grid-column:1 / span 2;
+width:min(100%,1000px) !important;
+margin:0 auto !important;
 }
 `;
+  clone.appendChild(exportStyle);
 
-let videoSection=clone.querySelector(".video-section");
-if(videoSection) videoSection.appendChild(style);
-
-// çıktı
-let html=clone.innerHTML;
-
-navigator.clipboard.writeText(html);
-alert("Birebir HTML kopyalandı");
+  let html=clone.innerHTML;
+  navigator.clipboard.writeText(html);
+  alert("Birebir HTML kopyalandı");
 }
 
+bindTextEditables();
+bindImages();
+bindVideoContainers();
+addParagraphControls();
+addTableControls();
+setupVideoGrid();
+addVideoControls();
 </script>
 
 </body>
