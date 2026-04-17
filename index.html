@@ -2,77 +2,139 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Live Editor</title>
+<title>Editor</title>
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
-  background:#111;
+  font-family:Inter,system-ui;
+  background:#0f1115;
   color:#fff;
-  font-family:Arial;
 }
 
-.topbar{
+.app{
+  display:flex;
+  height:100vh;
+}
+
+/* SOL PANEL */
+.sidebar{
+  width:380px;
+  background:#151922;
+  border-right:1px solid #2a3140;
+  padding:20px;
+  overflow:auto;
+}
+
+.sidebar h2{
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.input{
+  width:100%;
   padding:10px;
-  background:#1a1a1a;
-  position:sticky;
-  top:0;
+  margin-bottom:10px;
+  background:#0f141d;
+  border:1px solid #2a3140;
+  color:#fff;
+  border-radius:8px;
+}
+
+/* ÜST BAR */
+.topbar{
+  position:fixed;
+  right:0;
+  left:380px;
+  height:60px;
+  background:#151922;
+  border-bottom:1px solid #2a3140;
   display:flex;
   justify-content:flex-end;
+  align-items:center;
+  padding:0 20px;
+  z-index:2;
 }
 
+/* BUTON */
 button{
-  padding:10px 15px;
   background:#2f6df6;
-  color:#fff;
   border:none;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:8px;
   cursor:pointer;
 }
 
-#editor{
+/* PREVIEW */
+.preview{
+  flex:1;
+  padding:80px 40px 40px;
+  overflow:auto;
+}
+
+.preview-box{
   background:#fff;
   color:#000;
   padding:20px;
+  border-radius:16px;
 }
 
-/* SENİN CSS */
-.product-detail-section {
-  background:#fff;
-  font-family:sans-serif;
-}
-
+/* PARAGRAF */
 .product-detail-section [class^="paragraph-"]{
   display:flex;
   gap:20px;
+  padding:15px;
   margin:20px 0;
   background:#f2f2f2;
-  padding:15px;
   border-radius:10px;
 }
 
 .product-detail-section img{
   width:300px;
+  border-radius:10px;
 }
 
+[contenteditable]:focus{
+  outline:2px solid #2f6df6;
+}
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
+<!-- SOL -->
+<div class="sidebar">
+  <h2>Logo URL</h2>
+  <input class="input" id="logoInput" placeholder="logo url">
+
+  <h2>Video URL</h2>
+  <input class="input" id="videoInput" placeholder="youtube link">
+
+  <h2>Teknik Başlık</h2>
+  <input class="input" id="specTitle" placeholder="başlık">
+</div>
+
+<!-- SAĞ -->
+<div class="preview">
+
 <div class="topbar">
   <button onclick="copyHTML()">Kodu Kopyala</button>
 </div>
 
-<div id="editor" contenteditable="true">
+<div class="preview-box">
 
-<div class="product-detail-section">
+<div id="editor" class="product-detail-section" contenteditable="true">
 
 <div class="paragraph-1" style="flex-direction:row-reverse">
 <div>
-<h1>Başlığa tıkla düzenle</h1>
-<p>Metne tıkla düzenle</p>
+<h1>Başlığa tıkla</h1>
+<p>Metni düzenle</p>
 </div>
-<img src="https://placehold.co/300x300">
+<img src="https://placehold.co/300">
 </div>
 
 <div class="paragraph-2">
@@ -80,7 +142,7 @@ button{
 <h2>Başlık</h2>
 <p>Metin</p>
 </div>
-<img src="https://placehold.co/300x300">
+<img src="https://placehold.co/300">
 </div>
 
 <div class="paragraph-3" style="flex-direction:row-reverse">
@@ -88,7 +150,7 @@ button{
 <h2>Başlık</h2>
 <p>Metin</p>
 </div>
-<img src="https://placehold.co/300x300">
+<img src="https://placehold.co/300">
 </div>
 
 <div class="paragraph-4">
@@ -96,19 +158,36 @@ button{
 <h2>Başlık</h2>
 <p>Metin</p>
 </div>
-<img src="https://placehold.co/300x300">
+<img src="https://placehold.co/300">
 </div>
 
+</div>
+
+</div>
 </div>
 
 </div>
 
 <script>
 function copyHTML(){
-  const html = document.getElementById("editor").innerHTML;
+  let html = document.getElementById("editor").innerHTML;
   navigator.clipboard.writeText(html);
   alert("Kopyalandı");
 }
+
+/* LOGO */
+document.getElementById("logoInput").addEventListener("input",e=>{
+  let url=e.target.value;
+  let logo=document.querySelector("#editor .logo");
+  if(!logo){
+    let div=document.createElement("div");
+    div.className="logo";
+    div.innerHTML='<img style="width:300px">';
+    document.getElementById("editor").prepend(div);
+    logo=div;
+  }
+  logo.querySelector("img").src=url;
+});
 </script>
 
 </body>
