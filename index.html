@@ -169,11 +169,11 @@
 
 <script>
 
-// ===== EDIT =====
+// EDIT
 document.querySelectorAll("#editor h1,#editor h2,#editor p,#editor td,#editor th,#editor li")
 .forEach(el=> el.contentEditable="true");
 
-// ===== IMAGE (video hariç) =====
+// IMAGE (video hariç)
 document.querySelectorAll("#editor img").forEach(img=>{
   if(img.closest(".video-container")) return;
   img.style.cursor="pointer";
@@ -183,11 +183,10 @@ document.querySelectorAll("#editor img").forEach(img=>{
   }
 });
 
-// ===== YOUTUBE =====
+// YOUTUBE LINK
 document.querySelectorAll("#editor .video-container").forEach(v=>{
   v.style.cursor="pointer";
   v.onclick=function(){
-
     let url=prompt("YouTube linki");
     if(!url) return;
 
@@ -202,119 +201,255 @@ document.querySelectorAll("#editor .video-container").forEach(v=>{
   }
 });
 
-// ===== PARAGRAPH + - =====
-let directionToggle = false;
+// PARAGRAPH + -
+let directionToggle=false;
 
 function addParagraphControls(){
+let section=document.querySelector("#editor .product-detail-section");
+if(!section) return;
 
-  let section = document.querySelector("#editor .product-detail-section");
-  if(!section) return;
+let paragraphs=section.querySelectorAll("[class^='paragraph-']");
+let last=paragraphs[paragraphs.length-1];
 
-  let paragraphs = section.querySelectorAll("[class^='paragraph-']");
-  let last = paragraphs[paragraphs.length-1];
+document.querySelectorAll(".para-controls").forEach(el=>el.remove());
 
-  if(!last) return;
+let box=document.createElement("div");
+box.className="para-controls";
+box.style.textAlign="right";
 
-  document.querySelectorAll(".para-controls").forEach(el=>el.remove());
+let plus=document.createElement("button");
+plus.innerText="+";
 
-  let box = document.createElement("div");
-  box.className="para-controls";
-  box.style.textAlign="right";
+let minus=document.createElement("button");
+minus.innerText="-";
 
-  let plus = document.createElement("button");
-  plus.innerText="+";
+plus.onclick=function(){
+let clone=last.cloneNode(true);
+directionToggle=!directionToggle;
+clone.style.flexDirection=directionToggle?"row":"row-reverse";
+last.after(clone);
+addParagraphControls();
+};
 
-  let minus = document.createElement("button");
-  minus.innerText="-";
+minus.onclick=function(){
+if(paragraphs.length>1){
+last.remove();
+addParagraphControls();
+}
+};
 
-  plus.onclick=function(){
-
-    let clone = last.cloneNode(true);
-
-    directionToggle = !directionToggle;
-    clone.style.flexDirection = directionToggle ? "row" : "row-reverse";
-
-    last.after(clone);
-    addParagraphControls();
-  };
-
-  minus.onclick=function(){
-    if(paragraphs.length > 1){
-      last.remove();
-      addParagraphControls();
-    }
-  };
-
-  box.appendChild(plus);
-  box.appendChild(minus);
-
-  last.appendChild(box);
+box.appendChild(plus);
+box.appendChild(minus);
+last.appendChild(box);
 }
 
 addParagraphControls();
 
-// ===== TABLE + - (FIXLİ) =====
+// TABLE + -
 function addTableControls(){
+let table=document.querySelector("#editor .specs-container tbody");
+if(!table) return;
 
-  let table = document.querySelector("#editor .specs-container tbody");
-  if(!table) return;
+document.querySelectorAll(".row-controls").forEach(el=>el.remove());
 
-  document.querySelectorAll(".row-controls").forEach(el=>el.remove());
+let rows=table.querySelectorAll("tr");
+let last=rows[rows.length-1];
 
-  let rows = table.querySelectorAll("tr");
-  let last = rows[rows.length-1];
+let lastTd=last.querySelector("td:last-child");
+if(!lastTd) return;
 
-  let lastTd = last.querySelector("td:last-child");
-  if(!lastTd) return;
+let box=document.createElement("div");
+box.className="row-controls";
+box.style.textAlign="right";
 
-  let box = document.createElement("div");
-  box.className="row-controls";
-  box.style.textAlign="right";
-  box.style.marginTop="5px";
+let plus=document.createElement("button");
+plus.innerText="+";
 
-  let plus=document.createElement("button");
-  plus.innerText="+";
+let minus=document.createElement("button");
+minus.innerText="-";
 
-  let minus=document.createElement("button");
-  minus.innerText="-";
+plus.onclick=function(){
+let clone=last.cloneNode(true);
+table.appendChild(clone);
+addTableControls();
+};
 
-  plus.onclick=function(){
-    let clone = last.cloneNode(true);
-    table.appendChild(clone);
-    addTableControls();
-  };
+minus.onclick=function(){
+if(rows.length>1){
+last.remove();
+addTableControls();
+}
+};
 
-  minus.onclick=function(){
-    if(rows.length>1){
-      last.remove();
-      addTableControls();
-    }
-  };
-
-  box.appendChild(plus);
-  box.appendChild(minus);
-
-  lastTd.appendChild(box);
+box.appendChild(plus);
+box.appendChild(minus);
+lastTd.appendChild(box);
 }
 
 addTableControls();
 
-// ===== EXPORT =====
+// VIDEO GRID SETUP
+function setupVideoGrid(){
+
+let section=document.querySelector("#editor .video-section");
+if(!section) return;
+
+let title=section.querySelector("h2");
+
+let wrapper=document.createElement("div");
+wrapper.className="video-grid";
+
+wrapper.style.display="grid";
+wrapper.style.gridTemplateColumns="repeat(2,1fr)";
+wrapper.style.gap="15px";
+wrapper.style.maxWidth="900px";
+wrapper.style.margin="0 auto";
+
+let videos=section.querySelectorAll(".video-container");
+videos.forEach(v=>wrapper.appendChild(v));
+
+title.after(wrapper);
+
+updateVideoLayout();
+}
+
+function updateVideoLayout(){
+
+let wrapper=document.querySelector(".video-grid");
+if(!wrapper) return;
+
+let videos=wrapper.querySelectorAll(".video-container");
+
+videos.forEach(v=>{
+v.style.width="100%";
+v.style.maxWidth="100%";
+v.style.gridColumn="auto";
+});
+
+// tek video ortala
+if(videos.length===1){
+videos[0].style.gridColumn="1 / span 2";
+videos[0].style.maxWidth="600px";
+videos[0].style.margin="0 auto";
+}
+}
+
+// VIDEO + -
+function addVideoControls(){
+
+let section=document.querySelector("#editor .video-section");
+if(!section) return;
+
+document.querySelectorAll(".video-controls").forEach(el=>el.remove());
+
+let box=document.createElement("div");
+box.className="video-controls";
+box.style.textAlign="right";
+
+let plus=document.createElement("button");
+plus.innerText="+";
+
+let minus=document.createElement("button");
+minus.innerText="-";
+
+plus.onclick=function(){
+
+let url=prompt("YouTube linki");
+if(!url) return;
+
+let id="";
+if(url.includes("youtube.com")) id=url.split("v=")[1]?.split("&")[0];
+else if(url.includes("youtu.be")) id=url.split("/").pop();
+
+if(!id) return;
+
+let wrapper=document.querySelector(".video-grid");
+
+let container=document.createElement("div");
+container.className="video-container yt-lite";
+container.setAttribute("data-videoid",id);
+
+container.innerHTML=`
+<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+<div class="yt-playbtn"></div>
+`;
+
+wrapper.appendChild(container);
+updateVideoLayout();
+};
+
+minus.onclick=function(){
+
+let wrapper=document.querySelector(".video-grid");
+let videos=wrapper.querySelectorAll(".video-container");
+
+if(videos.length>1){
+videos[videos.length-1].remove();
+updateVideoLayout();
+}
+};
+
+box.appendChild(plus);
+box.appendChild(minus);
+section.appendChild(box);
+}
+
+// INIT
+setupVideoGrid();
+addVideoControls();
+
+// EXPORT (ASIL FIX BURADA)
 function copyHTML(){
 
-let clone = document.getElementById("editor").cloneNode(true);
+let clone=document.getElementById("editor").cloneNode(true);
 
-// contenteditable temizle
+// temizle
 clone.querySelectorAll("[contenteditable]").forEach(el=>{
-  el.removeAttribute("contenteditable");
+el.removeAttribute("contenteditable");
 });
 
-// kontrol butonlarını sil
-clone.querySelectorAll(".para-controls,.row-controls").forEach(el=>{
-  el.remove();
+clone.querySelectorAll(".para-controls,.row-controls,.video-controls").forEach(el=>{
+el.remove();
 });
 
-let html = clone.innerHTML;
+// iframe çevir
+clone.querySelectorAll(".video-container").forEach(v=>{
+let id=v.getAttribute("data-videoid");
+if(!id) return;
+
+v.innerHTML=`
+<iframe src="https://www.youtube.com/embed/${id}" 
+style="width:100%; height:100%; position:absolute; top:0; left:0;" 
+allowfullscreen></iframe>
+`;
+});
+
+// 🔥 GRID CSS EKLE (ÇÖZÜM)
+let style=document.createElement("style");
+style.innerHTML=`
+.video-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+max-width:900px;
+margin:0 auto;
+}
+.video-grid .video-container{
+width:100%!important;
+max-width:100%!important;
+}
+.video-grid .video-container:only-child{
+grid-column:1/span 2;
+max-width:600px;
+margin:0 auto;
+}
+`;
+
+let videoSection=clone.querySelector(".video-section");
+if(videoSection) videoSection.appendChild(style);
+
+// çıktı
+let html=clone.innerHTML;
 
 navigator.clipboard.writeText(html);
 alert("Birebir HTML kopyalandı");
